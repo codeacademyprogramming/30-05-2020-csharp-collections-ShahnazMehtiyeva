@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 
 namespace task
@@ -91,7 +92,11 @@ namespace task
             //GetDebtMoreThanAverage(debtors);
             //GetPhoneDoesntExist8(debtors);
             //GetNameWith3SameChar(debtors);
-            GetMaxYearBorn(debtors);
+            //GetMaxYearBorn(debtors);
+            //GetMax5Debts(debtors);
+            //GetTotalDebt(debtors);
+            //Get2WarDebt(debtors);
+            //GetUniquePhone(debtors);
         }
 
         static void GetEmailRtyhaAndDayrep(List<Debtor> debtors)
@@ -173,23 +178,23 @@ namespace task
 
         static void GetMaxYearBorn(List<Debtor> debtors)
         {
-            Dictionary<int, int> keyValuePairs = new Dictionary<int, int>();
+            Dictionary<int, int> pairs = new Dictionary<int, int>();
             for (int i = 0; i < debtors.Count; i++)
             {
                 int year = debtors[i].BirthDay.Year;
-                if (keyValuePairs.ContainsKey(year))
+                if (pairs.ContainsKey(year))
                 {
-                    keyValuePairs[year]++;
+                    pairs[year]++;
                 }
                 else
                 {
-                    keyValuePairs.Add(year, 1);
+                    pairs.Add(year, 1);
                 }
             }
-            List<int> years = keyValuePairs.Values.ToList();
+            List<int> years = pairs.Values.ToList();
             int maxYear = years.Max();
 
-            foreach (var item in keyValuePairs)
+            foreach (var item in pairs)
             {
                 if (item.Value == maxYear)
                 {
@@ -197,6 +202,65 @@ namespace task
                 }
             }
         }
+
+        static void GetMax5Debts(List<Debtor> debtors)
+        {
+            List<Debtor> list = debtors.OrderBy(x => x.Debt).ToList();
+            int count = 0;
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (count <= 5)
+                {
+                    Console.WriteLine(list[i].ToString());
+                    count++;
+                }
+            }
+        }
+
+        static void GetTotalDebt(List<Debtor> debtors)
+        {
+            int total = 0;
+            foreach (var item in debtors)
+            {
+                total += item.Debt;
+            }
+            Console.WriteLine($"Total debt is {total}");
+        }
+
+        static void Get2WarDebt(List<Debtor> debtors)
+        {
+            DateTime time = new DateTime(1945, 9, 2);
+            var result = debtors.Where(debtor => debtor.BirthDay <= time).ToList();
+            Output(result);
+        }
+
+        static void GetUniquePhone(List<Debtor> debtors)
+        {
+            for (int i = 0; i < debtors.Count; i++)
+            {
+                Dictionary<char, int> pairs = new Dictionary<char, int>();
+                foreach (var item in debtors[i].Phone)
+                {
+                    if (item != '-')
+                    {
+                        if (pairs.ContainsKey(item))
+                        {
+                            pairs[item]++;
+                        }
+                        else
+                        {
+                            pairs.Add(item, 1);
+                        }
+                    }
+                }
+                if (pairs.Values.ToList().TrueForAll(x => x == 1))
+                {
+                    Console.WriteLine(debtors[i].ToString());
+                }
+            }
+        }
+
+
         static void Output2(List<Debtor> list)
         {
             DateTime time = DateTime.Now;
